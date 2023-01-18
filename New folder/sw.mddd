@@ -67,3 +67,70 @@ contract SmartContractWallet {
 }
 
 This sample code defines a smart contract called SmartContractWallet that has an owner, a mapping of authorized signers, a mapping of recovered address, a mapping of authorized recover address, and a threshold number of authorized signers needed to recover the wallet. The constructor sets the msg.sender as the owner and an authorized signer, it also sets the threshold to 2, this can be changed later with the setThreshold function. The recover function verifies the signature of the message using the ecrecover function and it also verifies that the address trying to recover is not recovered yet, then it adds the address to the authorizedRecover mapping, and once the threshold is reached, it changes the owner to the address that called the function.
+
+
+The contract above uses the ecrecover function to sign messages, ecrecover is a built-in Solidity function that allows to recover the address that signed a message. This function takes two arguments as input:
+
+    A bytes32 message hash, which is the hash of the message to be signed, it is calculated using the sha3 function.
+    A bytes memory signature, which is the signature of the message.
+
+In the recover function of the smart contract, it first calculates the hash of the _signedMessage argument passed to the function using the sha3 function and stores it in the messageHash variable.
+
+Then it calls the ecrecover function passing the messageHash and the signature of the message as arguments, and assigns the returned address to the signer variable.
+
+bytes32 messageHash = sha3(_signedMessage);
+address signer = ecrecover(messageHash, sig);
+
+Then the function checks that the signer is an authorized signer, if so it proceeds to recover the wallet.
+
+require(authorizedSigners[signer]);
+
+It's important to note that the ecrecover function can only be used to recover the address that signed the message if the message was signed by an EOA (Externally Owned Account) and not by a smart contract.
+
+Also, the sig variable in the code is not defined, it should be passed as an argument of the recover function along with the _signedMessage, and it should be of type bytes memory.
+
+function recover(bytes memory _signedMessage, bytes memory sig) public {
+
+And the message should be signed by an EOA before being passed to the contract recover function, by using an Ethereum client or a library that allows to sign messages with private keys.
+
+The smart contract wallet above can be used to sign Aave transactions to stake tokens by adding new functions to the contract and implementing the Aave protocol's staking mechanism.
+
+Here is an example of how the smart contract wallet could be modified to sign Aave transactions to stake tokens:
+
+    First, you will need to import the Aave contract's address and ABI (Application Binary Interface) into your smart contract wallet. This can be done by using the pragma directive and the import statement.
+
+pragma solidity ^0.8.0;
+import "https://github.com/aave/aave-protocol/contracts/Aave.sol";
+
+    Next, you will need to add new variables to the contract to store the Aave contract's address and the staked token's address.
+
+address public aave;
+address public stakedToken;
+
+    In the constructor, you will need to initialize these variables with the Aave contract's address and the staked token's address.
+
+constructor(address _aave, address _stakedToken) public {
+    owner = msg.sender;
+    authorizedSigners[msg.sender] = true;
+    threshold = 2;
+    aave = _aave;
+    stakedToken = _stakedToken;
+}
+
+    Now, you can add a new function to the contract that allows the owner or an authorized signer to stake tokens on Aave. This function will call the Aave contract's stake function and pass the staked token's address and the amount of tokens to be staked as arguments.
+
+function stake(uint256 _amount) public {
+    require(msg.sender == owner || authorizedSigners[msg.sender]);
+    Aave aaveContract = Aave(aave);
+    aaveContract.stake(stakedToken, _amount);
+}
+
+    Similarly, you can add a new function to the contract that allows the owner or an authorized signer to withdraw staked tokens from Aave. This function will call the Aave contract's withdraw function and pass the staked token's address and the amount of tokens to be withdrawn as arguments.
+
+function withdraw(uint256 _amount) public {
+    require(msg.sender == owner || authorizedSigners[msg.sender]);
+    Aave aaveContract = Aave(aave);
+    aaveContract.withdraw(stakedToken, _amount);
+}
+
+It's important to note that this is just a sample code, it should be tested and audited before use on any production environment, also you should make sure that the Aave smart contract address and the staked token's address are correct and that the implementation of the Aave protocol follows the correct process and the last version of the Aave protocol.
