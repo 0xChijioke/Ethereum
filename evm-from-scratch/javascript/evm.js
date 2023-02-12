@@ -13,8 +13,34 @@
 
 function evm(code) {
   // TODO: Implement me
-
+  
+  const stack = [];
+  let pc = 0;
   const opcodes = [];
+  
+  while (pc < code.length) {
+    console.log("code", code);
+    const opcode = code[pc];
+    console.log("opcode", opcode)
+    pc++;
+    
+    const hexOpcode = `0x${opcode.toString(16).padStart(2, '0')}`;
+
+    if(hexOpcode == "0x00"){
+      return {success: true, stack}
+    } else if (opcode >= 96 && opcode <= 127){
+      let iterations = opcode - 96
+      let numbtoAdd = ''
+
+      for(let i = 0; i <= iterations; i++){
+        numbtoAdd = numbtoAdd.toString(16) + code[pc].toString(16)
+        pc++
+      }
+      numbtoAdd = new BN(numbtoAdd, 16)
+      stack.unshift(numbtoAdd);
+    }
+  }
+
   return { stack: [...opcodes] };
 }
 
