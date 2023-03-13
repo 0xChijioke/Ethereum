@@ -1,8 +1,8 @@
 import { Alchemy, Network } from 'alchemy-sdk';
-import { useEffect, useState } from 'react';
-import { Header } from "./components";
+import { Block, Header } from "./components";
 
 import './App.css';
+import MyContext from './context/context';
 
 // Refer to the README doc for more information about using API
 // keys in client-side code. You should never do this in production
@@ -21,22 +21,15 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 function App() {
-  const [blockNumber, setBlockNumber] = useState();
-
-  useEffect(() => {
-    async function getBlockNumber() {
-      setBlockNumber(await alchemy.core.getBlockNumber());
-    }
-
-    getBlockNumber();
-  });
 
   return (
     <>
-    <main className="p-3 max-w-screen min-h-screen flex flex-col">
-      <Header />
-      <div>{blockNumber}</div>
-    </main>
+    <MyContext.Provider value={alchemy}>
+      <main className="p-3 max-w-screen min-h-screen flex flex-col">
+        <Header />
+        <Block />
+      </main>
+    </MyContext.Provider>
     </>
   );
 }
