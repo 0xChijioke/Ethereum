@@ -1,5 +1,6 @@
 import { Alchemy, Network } from 'alchemy-sdk';
 import { useEffect, useState } from 'react';
+import { Header } from "./components";
 
 import './App.css';
 
@@ -30,7 +31,14 @@ function App() {
     getBlockNumber();
   });
 
-  return <div className="App">Block Number: {blockNumber}</div>;
+  return (
+    <>
+    <main className="p-3 max-w-screen min-h-screen flex flex-col">
+      <Header />
+      <div>{blockNumber}</div>
+    </main>
+    </>
+  );
 }
 
 export default App;
