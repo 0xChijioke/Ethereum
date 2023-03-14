@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import MyContext from '../context/context';
 import { Utils } from 'alchemy-sdk';
+import moment from 'moment/moment';
 
 
 const Block = () => {
@@ -11,34 +12,73 @@ const Block = () => {
 
     useEffect(() => {
         async function getBlockNumberAndTransactions() {
-            const bNumber = await alchemy.core.getBlockNumber();
-            setBlockNumber(bNumber);
-            const bTransaction = await alchemy.core.getBlockWithTransactions(bNumber);
-            setBlock(bTransaction);
+            try{
+                const bNumber = await alchemy.core.getBlockNumber();
+                setBlockNumber(bNumber);
+                const bTransaction = await alchemy.core.getBlockWithTransactions(bNumber);
+                setBlock(bTransaction);
+            } catch (err) {
+                console.log("Error", err);
+            }
 
         }
         getBlockNumberAndTransactions();
     });
 
-
+    
   return (
     <div>
-        <div className="bg-slate-900 p-4 rounded-xl w-1/2">
-            <h4 className="font-medium text-right">Block Height: {blockNumber}</h4>
-            <div className="w-full">
-                <div className="badge items-start badge-outline">latest</div>
-                <div>Block number: {block.number}</div>
-                <div>Block hash: {block.hash}</div>
-                <div>Block parent hash: {block.parentHash}</div>
-                <div>Block timestamp: {Date(block.timestamp)}</div>
-                <div>Nonce: {block.nonce}</div>
-                <div>Difficulty: {block.difficulty}</div>
-                <div>Gas limit: {Number(block.gasLimit)}</div>
-                <div>Gas used: {Number(block.gasUsed)}</div>
-                <div>Miner: {block.miner}</div>
-                <div>Extra data: {block.extraData}</div>
-                <div>Base fee: {Number(block.baseFeePerGas)}</div>
-                <div>_difficulty: {Number(block._difficulty)}</div>
+        <div className="bg-slate-900 p-4 flex flex-row shadow-lg rounded-xl w-full">
+            <div className="w-fit flex flex-col rounded-xl">
+                <h4 className="pb-3 text-xl font-semibold text-center">Block</h4>
+
+                <div className="divider"></div>
+
+                <div className="flex flex-row justify-between">
+                    <div className="badge mt-3 items-start badge-outline">latest</div>
+
+                    <div>
+                        <div className="btn-group">
+                            <div className="tooltip" data-tip="view previous block">
+                                <button className="btn hover:bg-cyan-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="tooltip" data-tip="view next block">
+                                <button className="btn hover:bg-cyan-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="space-y-7">
+                    <div className="flex flex-row justify-between">
+                        <div className="flex flex-col font-extrabold text-2xl"><span className="font-bold text-lg">Block #</span> {block.number}</div>
+                        <div  className="flex flex-col text-base text right font-medium"><span className="flex-wrap font-bold text-lg">Age</span> {moment(Date(block.timestamp)).fromNow()}</div>
+                    </div>
+                    <div className="text-sm"><span className="font-bold">Transactions:</span> {block.transactions && block.transactions.length -1} transactions in this block.</div>
+                    <div className="text-sm"><span className="font-bold">Gas used:</span> {Number(block.gasUsed)}</div>
+                    <div className="text-sm"><span className="font-bold">Gas limit:</span> {Number(block.gasLimit)}</div>
+                    <div className="text-sm"><span className="font-bold ">Base fee:</span> {Number(block.baseFeePerGas)}</div>
+                    <div className="text-sm"><span className="font-bold">Nonce:</span> {block.nonce}</div>
+                    <div className="text-sm"><span className="font-bold">Block timestamp:</span> {moment(Date(block.timestamp)).format("llll")}</div>
+                    <div className="text-sm"><span className="font-bold">Extra data:</span> {block.extraData}</div>
+                    <div className="text-sm"><span className="font-bold">Miner:</span> {block.miner}</div>
+                    <div className="text-sm"><span className="font-bold">Block hash:</span> {block.hash? block.hash : "0x" }</div>
+                    <div className="text-sm"><span className="font-bold">Block parent hash:</span> {block.parentHash? block.parentHash : "0x" }</div>
+                </div>
+            </div>
+            
+            <div className="flex flex-1 flex-col w-fit">
+                <h4 className="pb-3 text-xl font-semibol text-center">Transactions</h4>
+
+                <div className="divider"></div>
+
             </div>
         </div>
     </div>
