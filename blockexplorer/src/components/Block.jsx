@@ -25,6 +25,16 @@ const Block = () => {
         getBlockNumberAndTransactions();
     });
 
+    const handlePreviousBlock = async () => {
+        const previousBlock = await alchemy.core.getBlockWithTransactions(block.number - 1);
+        setBlock(previousBlock);
+      }
+    
+      const handleNextBlock = async () => {
+        const nextBlock = await alchemy.core.getBlockWithTransactions(block.number + 1);
+        setBlock(nextBlock);
+      }
+
     
   return (
     <div>
@@ -40,14 +50,14 @@ const Block = () => {
                     <div>
                         <div className="btn-group">
                             <div className="tooltip" data-tip="view previous block">
-                                <button className="btn hover:bg-cyan-700">
+                                <button className="btn hover:bg-cyan-700" onClick={handlePreviousBlock}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                     </svg>
                                 </button>
                             </div>
                             <div className="tooltip" data-tip="view next block">
-                                <button className="btn hover:bg-cyan-700">
+                                <button className="btn hover:bg-cyan-700" onClick={handleNextBlock}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
@@ -62,11 +72,11 @@ const Block = () => {
                         <div  className="flex flex-col text-base text right font-medium"><span className="flex-wrap font-bold text-lg">Age</span> {moment(Date(block.timestamp)).fromNow()}</div>
                     </div>
                     <div className="text-sm"><span className="font-bold">Transactions:</span> {block.transactions && block.transactions.length -1} transactions in this block.</div>
-                    <div className="text-sm"><span className="font-bold">Gas used:</span> {Number(block.gasUsed)}</div>
+                    <div className="text-sm"><span className="font-bold">Gas used:</span> {block.gasUsed && Utils.formatEther(block.gasUsed)} Ether</div>
                     <div className="text-sm"><span className="font-bold">Gas limit:</span> {Number(block.gasLimit)}</div>
                     <div className="text-sm"><span className="font-bold ">Base fee:</span> {Number(block.baseFeePerGas)}</div>
                     <div className="text-sm"><span className="font-bold">Nonce:</span> {block.nonce}</div>
-                    <div className="text-sm"><span className="font-bold">Block timestamp:</span> {moment(Date(block.timestamp)).format("llll")}</div>
+                    <div className="text-sm"><span className="font-bold">Block timestamp:</span> {moment.unix(block.timestamp).local().format("llll")}</div>
                     <div className="text-sm"><span className="font-bold">Extra data:</span> {block.extraData}</div>
                     <div className="text-sm"><span className="font-bold">Miner:</span> {block.miner}</div>
                     <div className="text-sm"><span className="font-bold">Block hash:</span> {block.hash? block.hash : "0x" }</div>
