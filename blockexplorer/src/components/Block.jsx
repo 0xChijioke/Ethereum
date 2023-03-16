@@ -22,7 +22,7 @@ const Block = () => {
             }
 
         }
-        getBlockNumberAndTransactions();
+         getBlockNumberAndTransactions();
     });
 
     const handlePreviousBlock = async () => {
