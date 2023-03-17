@@ -9,6 +9,7 @@ const Block = () => {
     const alchemy = useContext(MyContext);
     const [blockNumber, setBlockNumber] = useState();
     const [block, setBlock] = useState({});
+    const [error, setError] = useState("");
 
     useEffect(() => {
         async function getBlockNumberAndTransactions() {
@@ -22,7 +23,7 @@ const Block = () => {
             }
 
         }
-         getBlockNumberAndTransactions();
+        getBlockNumberAndTransactions();
     });
 
     const handlePreviousBlock = async () => {
