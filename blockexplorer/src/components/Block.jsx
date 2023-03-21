@@ -16,9 +16,10 @@ const Block = () => {
             try{
                 const bNumber = await alchemy.core.getBlockNumber();
                 setBlockNumber(bNumber);
-                const bTransaction = await alchemy.core.getBlockWithTransactions(bNumber);
+                const bTransaction = await alchemy.core.getBlockWithTransactions(blockNumber);
                 setBlock(bTransaction);
             } catch (err) {
+                setError(err);
                 console.log("Error", err);
             }
 
@@ -39,8 +40,8 @@ const Block = () => {
     
   return (
     <div>
-        <div className="bg-slate-900 p-4 flex flex-row shadow-lg rounded-xl w-full">
-            <div className="w-fit flex flex-col rounded-xl">
+        <div className="bg-slate-900 p-4 flex md:flex-row flex-col shadow-lg rounded-xl w-full">
+            <div className="w-full md:w-fit flex flex-col rounded-xl">
                 <h4 className="pb-3 text-xl font-semibold text-center">Block</h4>
 
                 <div className="divider"></div>
@@ -66,6 +67,7 @@ const Block = () => {
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div className="space-y-7">
                     <div className="flex flex-row justify-between">
@@ -90,6 +92,32 @@ const Block = () => {
 
                 <div className="divider"></div>
 
+                <div>
+                    <div>Block {blockNumber} Transactions</div>
+                    {block.transactions && block.transactions.map((transaction) => {
+                        <>
+                            <div>Transaction Type: {transaction.type}</div>
+                            <div>Transaction Hash: {transaction.hash}</div>
+                            <div>Transaction blockHash: {transaction.blockHash}</div>
+                            <div>Transaction blockNumber: {transaction.blockNumber}</div>
+                            <div>Transaction Index: {transaction.transactionIndex}</div>
+                            <div>ChainId: {transaction.chainId}</div>
+                            <div>From: {transaction.from}</div>
+                            <div>To: {transaction.to}</div>
+                            <div>Value: {transaction.value && Utils.formatEther(transaction.value)}</div>
+                            <div>Nonce: {transaction.nonce}</div>
+                            <div>Gas Price: {transaction.gasPrice && Utils.formatEther(transaction.gasPrice)}</div>
+                            <div>Max Priority Fee: {transaction.maxPriorityFeePerGas && Utils.formatEther(transaction.maxPriorityFeePerGas)}</div>
+                            <div>Max Fee Per Gas: {transaction.maxFeePerGas && Utils.formatEther(transaction.maxFeePerGas)}</div>
+                            <div>Gas limit: {transaction.gasLimit && Utils.formatEther(transaction.gasLimit)}</div>
+                            <div>Creates: {transaction.creates}</div>
+                            <div>Data: {transaction.data && transaction.data}</div>
+                            <div>v: {transaction.v && transaction.v}</div>
+                            <div>r: {transaction.r && transaction.r}</div>
+                            <div>s: {transaction.s && transaction.s}</div>
+                        </>
+                    })}
+                </div>
             </div>
         </div>
     </div>
