@@ -11,6 +11,8 @@ Blockexplorers give us the ability to view lots of different information about t
   * accounts
   * and many other things
   
+  ## would be using some advanced API
+  
 [Etherscan](https://etherscan.io/) is a good example of an Ethereum blockexplorer. Check it out to get familiar with how blockexplorers generally work.
 
 This particular project is very much open-ended. We'll add some challenges here to get your imagination going, but use Etherscan as a guide for features you might consider building in your project.
