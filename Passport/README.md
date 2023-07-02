@@ -1,9 +1,5 @@
 # 🏗 Gitcoin Passport & Scaffold-ETH 2
 
-# Todo: 
-- Investigate the problem with the Scorer API implmentation.
-
-
 🧪 The Gitcoin Scorer API  is a centralized service provided by Gitcoin to make it easier to read and work with Passport scores. It is the recommended way of integrating with Gitcoin Passport. 
 
 - ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
